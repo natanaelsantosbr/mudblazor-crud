@@ -14,5 +14,11 @@ namespace Dot7.BlazorWasm.API.Controllers
         {
             _superHeroesService = superHeroesService;
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAsync()
+        {
+            return Ok(await this._superHeroesService.GetAllAsync());
+        }
     }
 }

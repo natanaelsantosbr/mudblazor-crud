@@ -17,6 +17,17 @@ builder.Services.AddDbContext<ApplicationDbContext>(a =>
 
 builder.Services.AddScoped<ISuperHeroesService, SuperHeroesService>();
 
+builder.Services.AddCors(a =>
+{
+    a.AddPolicy(name: "blazorCors",
+        policy =>
+        {
+            policy.WithOrigins("https://localhost:7279")
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+        });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -27,7 +38,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseCors("blazorCors");
 app.UseAuthorization();
 
 app.MapControllers();

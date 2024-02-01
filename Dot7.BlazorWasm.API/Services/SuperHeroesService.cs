@@ -6,5 +6,7 @@ namespace Dot7.BlazorWasm.API.Services
     public interface ISuperHeroesService
     {
         Task<List<SuperHeroes>> GetAllAsync();
+
+        Task<SuperHeroes> CreateSuperHeroesAsync(SuperHeroes entity);
     }
 }

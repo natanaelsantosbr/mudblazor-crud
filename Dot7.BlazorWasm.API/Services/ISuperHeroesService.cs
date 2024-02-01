@@ -13,6 +13,14 @@ namespace Dot7.BlazorWasm.API.Services
             _applicationDbContext = applicationDbContext;
         }
 
+        public async Task<SuperHeroes> CreateSuperHeroesAsync(SuperHeroes entity)
+        {
+            await _applicationDbContext.SuperHeroes.AddAsync(entity);
+            await _applicationDbContext.SaveChangesAsync();
+
+            return entity;  
+        }
+
         public async Task<List<SuperHeroes>> GetAllAsync()
         {
             return await this._applicationDbContext.SuperHeroes.ToListAsync();

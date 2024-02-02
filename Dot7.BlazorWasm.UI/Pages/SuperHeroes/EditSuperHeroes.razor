@@ -1,0 +1,57 @@
+﻿@page "/superheroes/edit/{id:int}"
+@inject HttpClient _http
+@inject NavigationManager _navigationManager
+
+<div class="d-flex justify-center mt-6">
+    <MudChip Color="Color.Primary">
+        <h4>Update A Super Hero</h4>
+    </MudChip>
+</div>
+<div class="d-flex justify-center mt-6">
+    <EditForm Model="@model" OnSubmit="UpdateSuperHeroAsync">
+        <MudCard Class="d-flex justify-center" Width="800px">
+            <MudCardContent>
+                <MudTextField Label="Name" Class="mt-2"
+                              @bind-Value="model.Name" For="@(() => model.Name)" />
+                <MudTextField Label="Image URL"
+                              @bind-Value="model.ImageUrl" For="@(() => model.ImageUrl)" />
+                <MudSelect Class="mt-2" Margin="Margin.Dense" T="string" Label="Franchise" Variant="Variant.Text" @bind-Value="model.Franchise">
+                    <MudSelectItem Value="@("dc")">DC</MudSelectItem>
+                    <MudSelectItem Value="@("marvel")">Marvel</MudSelectItem>
+                </MudSelect>
+                <MudForm Class="mt-2">
+                    <MudRadioGroup @bind-SelectedOption="@model.Gender">
+                        <MudRadio Option="@("male")" Color="Color.Primary">Male</MudRadio>
+                        <MudRadio Option="@("female")" Color="Color.Secondary">Female</MudRadio>
+                        <MudRadio Option="@("others")" Color="Color.Primary">Others</MudRadio>
+                    </MudRadioGroup>
+                </MudForm>
+                <MudButton Variant="Variant.Filled" ButtonType="ButtonType.Submit" Color="Color.Primary" Class="mt-2">Update</MudButton>
+            </MudCardContent>
+            <MudCardContent>
+                <div class="d-flex justify-center">
+                    <MudImage ObjectFit="ObjectFit.Cover" Height="200" Width="250" Src="@model.ImageUrl" Elevation="25" Class="rounded-lg" />
+                </div>
+            </MudCardContent>
+        </MudCard>
+    </EditForm>
+
+</div>
+
+@code {
+    SuperHeroesVM model = new SuperHeroesVM();
+
+    [Parameter]
+    public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        model = await _http.GetFromJsonAsync<SuperHeroesVM>($"/api/SuperHeroes/{Id}");
+    }
+
+    private async Task UpdateSuperHeroAsync()
+    {
+        await _http.PutAsJsonAsync<SuperHeroesVM>("/api/SuperHeroes", model);
+        _navigationManager.NavigateTo("/superheroes/home");
+    }
+}

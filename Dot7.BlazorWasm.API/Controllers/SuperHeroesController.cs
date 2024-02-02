@@ -28,5 +28,19 @@ namespace Dot7.BlazorWasm.API.Controllers
             var retorno = await this._superHeroesService.CreateSuperHeroesAsync(model);
             return Ok(retorno);
         }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetAsync([FromRoute] int id)
+        {
+            var result = await this._superHeroesService.GetSuperHeroesById(id);
+            return Ok(result);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> PutAsync([FromBody] SuperHeroes model)
+        {
+            var retorno = await this._superHeroesService.UpdateSuperHeroesAsync(model);
+            return Ok(retorno);
+        }
     }
 }

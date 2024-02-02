@@ -1,12 +1,42 @@
 ﻿using Dot7.BlazorWasm.API.Data;
 using Dot7.BlazorWasm.API.Data.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Dot7.BlazorWasm.API.Services
 {
-    public interface ISuperHeroesService
+    public class SuperHeroesService : ISuperHeroesService
     {
-        Task<List<SuperHeroes>> GetAllAsync();
+        private readonly ApplicationDbContext _db;
 
-        Task<SuperHeroes> CreateSuperHeroesAsync(SuperHeroes entity);
+        public SuperHeroesService(ApplicationDbContext db)
+        {
+            _db = db;
+        }
+
+        public async Task<SuperHeroes> CreateSuperHeroesAsync(SuperHeroes entity)
+        {
+            await _db.SuperHeroes.AddAsync(entity);
+            await _db.SaveChangesAsync();
+
+            return entity;  
+        }
+
+        public async Task<List<SuperHeroes>> GetAllAsync()
+        {
+            return await this._db.SuperHeroes.ToListAsync();
+        }
+
+        public async Task<SuperHeroes> GetSuperHeroesById(int id)
+        {
+            return await this._db.SuperHeroes.FirstOrDefaultAsync(a => a.Id == id);
+        }
+
+        public async Task<SuperHeroes> UpdateSuperHeroesAsync(SuperHeroes entidade)
+        {
+            this._db.SuperHeroes.Update(entidade);
+            await this._db.SaveChangesAsync();
+
+            return entidade;
+        }
     }
 }

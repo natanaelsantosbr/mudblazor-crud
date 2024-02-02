@@ -23,6 +23,9 @@
                         <MudText Typo="Typo.body2">Franchise - @item.Franchise</MudText>
                         <MudText Typo="Typo.body2">Gender - @item.Gender</MudText>
                     </MudCardContent>
+                    <MudCardActions>
+                        <MudIcon Icon="@Icons.Material.Filled.Edit" Title="Edit" @onclick="@(() =>  { _navigationManager.NavigateTo($"/superheroes/edit/{item.Id}"); })"  />
+                    </MudCardActions>
                 </MudCard>
         }
     </div>

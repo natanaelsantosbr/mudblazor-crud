@@ -42,5 +42,12 @@ namespace Dot7.BlazorWasm.API.Controllers
             var retorno = await this._superHeroesService.UpdateSuperHeroesAsync(model);
             return Ok(retorno);
         }
+
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> DeleteAsync([FromRoute] int id)
+        {
+            var retorno = await this._superHeroesService.DeleteSuperHeroesAsync(id);
+            return Ok(retorno);
+        }
     }
 }

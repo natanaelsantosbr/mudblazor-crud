@@ -12,5 +12,7 @@ namespace Dot7.BlazorWasm.API.Services
         Task<SuperHeroes> GetSuperHeroesById(int id);
 
         Task<SuperHeroes> UpdateSuperHeroesAsync(SuperHeroes updateSuperHeroes);
+
+        Task<int> DeleteSuperHeroesAsync(int id);
     }
 }

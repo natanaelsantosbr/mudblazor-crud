@@ -1,0 +1,31 @@
+﻿@inject HttpClient _http;
+
+<MudDialog>
+    <DialogContent>
+        Are you sure to delete this item ?
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="ConfirmDeleteAsync">Confirmar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+
+    [CascadingParameter]
+    MudDialogInstance MudDialog{ get; set; }
+
+    [Parameter]
+    public int Id { get; set; }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private async Task ConfirmDeleteAsync()
+    {
+        await _http.DeleteFromJsonAsync<int>($"/api/SuperHeroes/{Id}");
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+}

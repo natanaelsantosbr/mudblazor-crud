@@ -20,7 +20,7 @@ namespace Dot7.BlazorWasm.API.Services
 
             return entity;  
         }
-
+                
         public async Task<List<SuperHeroes>> GetAllAsync()
         {
             return await this._db.SuperHeroes.ToListAsync();
@@ -37,6 +37,12 @@ namespace Dot7.BlazorWasm.API.Services
             await this._db.SaveChangesAsync();
 
             return entidade;
+        }
+
+        public async Task<int> DeleteSuperHeroesAsync(int id)
+        {
+            await _db.SuperHeroes.Where(a=> a.Id == id).ExecuteDeleteAsync();
+            return id;
         }
     }
 }

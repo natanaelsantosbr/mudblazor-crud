@@ -1,6 +1,7 @@
 ﻿@page "/superheroes/home"
 @inject HttpClient _httpClient
 @inject NavigationManager _navigationManager
+@inject IDialogService _dialogService
 
 <MudContainer Class="ma-4">
     <div class="d-flex ma-2 justify-center"> 
@@ -25,12 +26,11 @@
                     </MudCardContent>
                     <MudCardActions>
                         <MudIcon Icon="@Icons.Material.Filled.Edit" Title="Edit" @onclick="@(() =>  { _navigationManager.NavigateTo($"/superheroes/edit/{item.Id}"); })"  />
+                        <MudIcon Icon="@Icons.Material.Filled.Delete" Title="Delete" Color="Color.Primary" @onclick="@(() =>  { DeleteSuperHeroAsync(item.Id);  })" />
                     </MudCardActions>
                 </MudCard>
         }
-    </div>
-
-   
+    </div>   
 </MudContainer>
 
 
@@ -46,5 +46,21 @@
     private async Task GetAllSuperHeroesAsync()
     {
         allHeroes = await _httpClient.GetFromJsonAsync<List<SuperHeroesVM>>("/api/SuperHeroes");
+    }
+
+    private async Task DeleteSuperHeroAsync(int id)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("Id", id);
+
+        var dialog = await _dialogService.ShowAsync<SuperHeroeDeleteDialog>("Delete Confirmation", parameters);
+
+        var result = await dialog.Result;
+
+        if(!result.Cancelled)
+        {
+            allHeroes = allHeroes.Where(a => a.Id != id).ToList();
+            StateHasChanged();
+        }
     }
 }

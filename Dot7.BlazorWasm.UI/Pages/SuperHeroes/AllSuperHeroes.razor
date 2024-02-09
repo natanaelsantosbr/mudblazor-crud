@@ -14,6 +14,11 @@
                     <MudSelectItem Value="@("franchise-by-asc")">Franchise Bu Asc</MudSelectItem>
                 </MudSelect>
             </MudItem>
+            <MudItem md="4">
+
+                <MudTextField @bind-Value="SearchKey" Label="Search" Variant="Variant.Text" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search"
+                              AdornmentColor="Color.Secondary" OnAdornmentClick="DoSearchAsync" />
+            </MudItem>
         </MudGrid>
     </div>
     <div class="d-flex ma-2 justify-center"> 
@@ -50,6 +55,7 @@
 @code {
     private List<SuperHeroesVM> allHeroes = new List<SuperHeroesVM>();
     private string SortingKey { get; set; }
+    private string SearchKey { get; set; }
     protected override async Task OnInitializedAsync()
     {
         await GetAllSuperHeroesAsync();
@@ -61,7 +67,7 @@
 
         var sortingParam = GetSortedValue();
 
-        url = $"{url}?sort={sortingParam.Sort ??  string.Empty}&OrderBy={sortingParam.OrderBy}";
+        url = $"{url}?sort={sortingParam.Sort ??  string.Empty}&OrderBy={sortingParam.OrderBy}&search={SearchKey}";
 
         allHeroes = await _httpClient.GetFromJsonAsync<List<SuperHeroesVM>>(url);
     }
@@ -110,6 +116,11 @@
     private async Task DoSoringAsync(string value)
     {
         SortingKey = value;
+        await GetAllSuperHeroesAsync();
+    }
+
+    private async Task DoSearchAsync()
+    {
         await GetAllSuperHeroesAsync();
     }
 }

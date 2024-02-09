@@ -4,5 +4,7 @@
     {
         public string? Sort { get; set; }
         public string? OrderBy { get; set; }
+
+        public string? Search { get; set; }
     }
 }

@@ -46,6 +46,11 @@ namespace Dot7.BlazorWasm.API.Services
                 }
             }
 
+            if(!string.IsNullOrEmpty(filter.Search))
+            {
+                query = query.Where(a=> a.Gender.ToLower() == filter.Search.ToLower());
+            }
+
             return await query.ToListAsync();
         }
 

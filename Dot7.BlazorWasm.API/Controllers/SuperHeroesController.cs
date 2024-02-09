@@ -1,4 +1,5 @@
 ﻿using Dot7.BlazorWasm.API.Data.Entities;
+using Dot7.BlazorWasm.API.Dtos;
 using Dot7.BlazorWasm.API.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,9 +18,9 @@ namespace Dot7.BlazorWasm.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAsync()
+        public async Task<IActionResult> GetAsync([FromQuery] SuperHeroesFilterDto filter)
         {
-            return Ok(await this._superHeroesService.GetAllAsync());
+            return Ok(await this._superHeroesService.GetAllAsync(filter));
         }
 
         [HttpPost]

@@ -4,6 +4,18 @@
 @inject IDialogService _dialogService
 
 <MudContainer Class="ma-4">
+    <div class="d-flex ma-2">
+        <MudGrid>
+            <MudItem md="4">
+                <MudSelect Class="mt-2" Margin="Margin.Dense" T="string" Label="Do Sorting..." Variant="Variant.Text" ValueChanged="DoSoringAsync">
+                    <MudSelectItem Value="@("id-by-desc")">Id By Desc</MudSelectItem>
+                    <MudSelectItem Value="@("id-by-asc")">Id By Asc</MudSelectItem>
+                    <MudSelectItem Value="@("franchise-by-desc")">Franchise By Desc</MudSelectItem>
+                    <MudSelectItem Value="@("franchise-by-asc")">Franchise Bu Asc</MudSelectItem>
+                </MudSelect>
+            </MudItem>
+        </MudGrid>
+    </div>
     <div class="d-flex ma-2 justify-center"> 
         <MudFab Color="Color.Primary" Label="Add" @onclick="@(() =>  { _navigationManager.NavigateTo("/superheroes/add"); })" />
     </div>
@@ -37,7 +49,7 @@
 
 @code {
     private List<SuperHeroesVM> allHeroes = new List<SuperHeroesVM>();
-
+    private string SortingKey { get; set; }
     protected override async Task OnInitializedAsync()
     {
         await GetAllSuperHeroesAsync();
@@ -45,7 +57,13 @@
 
     private async Task GetAllSuperHeroesAsync()
     {
-        allHeroes = await _httpClient.GetFromJsonAsync<List<SuperHeroesVM>>("/api/SuperHeroes");
+        string url = "/api/SuperHeroes";
+
+        var sortingParam = GetSortedValue();
+
+        url = $"{url}?sort={sortingParam.Sort ??  string.Empty}&OrderBy={sortingParam.OrderBy}";
+
+        allHeroes = await _httpClient.GetFromJsonAsync<List<SuperHeroesVM>>(url);
     }
 
     private async Task DeleteSuperHeroAsync(int id)
@@ -62,5 +80,36 @@
             allHeroes = allHeroes.Where(a => a.Id != id).ToList();
             StateHasChanged();
         }
+    }
+
+    private (string Sort, string OrderBy)  GetSortedValue()
+    {
+        if (!string.IsNullOrEmpty(SortingKey))
+        {
+            if (SortingKey.ToLower() == "id-by-desc")
+            {
+                return ("id", "desc");
+            }
+            else if (SortingKey.ToLower() == "id-by-asc")
+            {
+                return ("id", "asc");
+            }
+            if (SortingKey.ToLower() == "franchise-by-desc")
+            {
+                return ("franchise", "desc");
+            }
+            if (SortingKey.ToLower() == "franchise-by-asc")
+            {
+                return ("franchise", "asc");
+            }
+        }
+
+        return (string.Empty, string.Empty);
+    }
+
+    private async Task DoSoringAsync(string value)
+    {
+        SortingKey = value;
+        await GetAllSuperHeroesAsync();
     }
 }

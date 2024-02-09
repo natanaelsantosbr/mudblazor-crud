@@ -1,5 +1,6 @@
 ﻿using Dot7.BlazorWasm.API.Data;
 using Dot7.BlazorWasm.API.Data.Entities;
+using Dot7.BlazorWasm.API.Dtos;
 using Microsoft.EntityFrameworkCore;
 
 namespace Dot7.BlazorWasm.API.Services
@@ -21,9 +22,31 @@ namespace Dot7.BlazorWasm.API.Services
             return entity;  
         }
                 
-        public async Task<List<SuperHeroes>> GetAllAsync()
+        public async Task<List<SuperHeroes>> GetAllAsync(SuperHeroesFilterDto filter)
         {
-            return await this._db.SuperHeroes.ToListAsync();
+            var query = this._db.SuperHeroes.AsQueryable();
+
+            if(!string.IsNullOrEmpty(filter.Sort) && !string.IsNullOrWhiteSpace(filter.OrderBy))
+            {
+                if(filter.Sort.ToLower() == "id" && filter.OrderBy.ToLower() == "desc")
+                {
+                    query = query.OrderByDescending(x => x.Id);
+                }
+                else if (filter.Sort.ToLower() == "id" && filter.OrderBy.ToLower() == "asc")
+                {
+                    query = query.OrderBy(x => x.Id);
+                }
+                else if (filter.Sort.ToLower() == "franchise" && filter.OrderBy.ToLower() == "desc")
+                {
+                    query = query.OrderByDescending(x => x.Franchise);
+                }
+                else if (filter.Sort.ToLower() == "franchise" && filter.OrderBy.ToLower() == "asc")
+                {
+                    query = query.OrderBy(x => x.Franchise);
+                }
+            }
+
+            return await query.ToListAsync();
         }
 
         public async Task<SuperHeroes> GetSuperHeroesById(int id)
